@@ -81,7 +81,6 @@ export default function Home() {
 
 const rotationSettingsPage1: Record<number, number> = {
   0: 90,
-  12: 180,
 };
 
 const rotationSettingsPage2: Record<number, number> = {
