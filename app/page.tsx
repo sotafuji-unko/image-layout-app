@@ -177,45 +177,48 @@ const handleChange13 = (e: React.ChangeEvent<HTMLInputElement>) => {
   setImages7(newImages);
 };
 
-  const handleDownload9 = () => {
-    const uri = stageRef9.current?.toDataURL({
-      pixelRatio: 2,
-    });
-
-    if (!uri) return;
-
-    const link = document.createElement("a");
-    link.download = "layout-9.png";
-    link.href = uri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleDownload4 = () => {
-    const uri = stageRef4.current?.toDataURL({
-      pixelRatio: 2,
-    });
-
-    if (!uri) return;
-
-    const link = document.createElement("a");
-    link.download = "layout-4.png";
-    link.href = uri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleDownload7 = () => {
-  const uri = stageRef7.current?.toDataURL({
+const handleDownload9 = () => {
+  const uri = stageRef9.current?.toDataURL({
     pixelRatio: 2,
+    mimeType: "image/jpeg",
   });
 
   if (!uri) return;
 
   const link = document.createElement("a");
-  link.download = "layout-7.png";
+  link.download = "layout-9.jpg";
+  link.href = uri;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const handleDownload4 = () => {
+  const uri = stageRef4.current?.toDataURL({
+    pixelRatio: 2,
+    mimeType: "image/jpeg", // ← 追加
+  });
+
+  if (!uri) return;
+
+  const link = document.createElement("a");
+  link.download = "layout-4.jpg"; // ← 変更
+  link.href = uri;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const handleDownload7 = () => {
+  const uri = stageRef7.current?.toDataURL({
+    pixelRatio: 2,
+    mimeType: "image/jpeg", // ← 追加
+  });
+
+  if (!uri) return;
+
+  const link = document.createElement("a");
+  link.download = "layout-7.jpg"; // ← 変更
   link.href = uri;
   document.body.appendChild(link);
   link.click();
