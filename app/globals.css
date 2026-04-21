@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
+/* ── Dark theme (default) ── */
 :root {
   --bg: #0a0a0f;
   --surface: #111118;
   --surface2: #18181f;
   --border: #252530;
   --text: #e8e8f0;
+  --text-sub: #999ab0;
   --muted: #666680;
   --blue: #3b82f6;
   --blue-dim: rgba(59,130,246,0.15);
@@ -13,6 +15,29 @@
   --green-dim: rgba(34,197,94,0.15);
   --purple: #a855f7;
   --purple-dim: rgba(168,85,247,0.15);
+  --header-bg: linear-gradient(180deg,#111118 0%,#0a0a0f 100%);
+  --canvas-bg: #0e0e16;
+  --scrollbar: #333344;
+}
+
+/* ── Light theme ── */
+[data-theme="light"] {
+  --bg: #f4f4f8;
+  --surface: #ffffff;
+  --surface2: #f0f0f5;
+  --border: #e0e0ea;
+  --text: #111120;
+  --text-sub: #555568;
+  --muted: #888899;
+  --blue: #2563eb;
+  --blue-dim: rgba(37,99,235,0.08);
+  --green: #16a34a;
+  --green-dim: rgba(22,163,74,0.08);
+  --purple: #9333ea;
+  --purple-dim: rgba(147,51,234,0.08);
+  --header-bg: linear-gradient(180deg,#ffffff 0%,#f4f4f8 100%);
+  --canvas-bg: #e8e8f0;
+  --scrollbar: #c8c8d8;
 }
 
 * { box-sizing: border-box; }
@@ -22,9 +47,33 @@ body {
   color: var(--text);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   margin: 0;
+  transition: background 0.25s, color 0.25s;
 }
 
-/* Upload zone */
+/* ── Theme toggle button ── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+.theme-toggle:hover {
+  background: var(--surface);
+  border-color: var(--muted);
+  transform: translateY(-1px);
+}
+.theme-toggle:active { transform: translateY(0); }
+
+/* ── Upload zone ── */
 .upload-zone {
   border: 2px dashed var(--border);
   border-radius: 14px;
@@ -35,11 +84,11 @@ body {
   user-select: none;
 }
 .upload-zone:hover {
-  border-color: #444455;
-  background: rgba(255,255,255,0.02);
+  border-color: var(--muted);
+  background: var(--surface2);
 }
 
-/* Progress bar */
+/* ── Progress bar ── */
 .progress-track {
   height: 6px;
   background: var(--border);
@@ -53,21 +102,19 @@ body {
   transition: width 0.4s ease;
 }
 
-/* Canvas scroll container */
+/* ── Canvas scroll container ── */
 .canvas-scroll {
   overflow-x: auto;
   overflow-y: hidden;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: #0e0e16;
+  background: var(--canvas-bg);
   scrollbar-width: thin;
-  scrollbar-color: #333344 transparent;
+  scrollbar-color: var(--scrollbar) transparent;
 }
 .canvas-scroll::-webkit-scrollbar { height: 6px; }
 .canvas-scroll::-webkit-scrollbar-track { background: transparent; }
-.canvas-scroll::-webkit-scrollbar-thumb { background: #333344; border-radius: 9999px; }
+.canvas-scroll::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 9999px; }
 
-/* Canvas title bar */
+/* ── Canvas title bar ── */
 .canvas-titlebar {
   display: flex;
   align-items: center;
@@ -78,7 +125,7 @@ body {
   border-radius: 12px 12px 0 0;
 }
 
-/* Download button */
+/* ── Download button ── */
 .dl-btn {
   display: inline-flex;
   align-items: center;
@@ -92,33 +139,22 @@ body {
   transition: filter 0.15s, transform 0.1s;
   color: #fff;
 }
-.dl-btn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.dl-btn:hover  { filter: brightness(1.12); transform: translateY(-1px); }
 .dl-btn:active { transform: translateY(0); }
-.dl-btn-blue  { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
-.dl-btn-green { background: linear-gradient(135deg,#16a34a,#15803d); }
-.dl-btn-purple{ background: linear-gradient(135deg,#9333ea,#7e22ce); }
+.dl-btn-blue   { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
+.dl-btn-green  { background: linear-gradient(135deg,#16a34a,#15803d); }
+.dl-btn-purple { background: linear-gradient(135deg,#9333ea,#7e22ce); }
 
-/* Section card */
+/* ── Section card ── */
 .section-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 32px;
+  transition: background 0.25s, border-color 0.25s;
 }
 
-/* Badge */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 12px;
-  border-radius: 9999px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-/* Section number dot */
+/* ── Section dot ── */
 .section-dot {
   width: 36px;
   height: 36px;
@@ -131,7 +167,7 @@ body {
   flex-shrink: 0;
 }
 
-/* Canvas sub-block */
+/* ── Canvas block wrapper ── */
 .canvas-block {
   margin-top: 28px;
   border-radius: 12px;

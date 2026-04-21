@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Stage, Layer, Image as KonvaImage, Rect } from "react-konva";
 
 type ImageItem = {
@@ -79,7 +79,7 @@ function UploadZone({
         {count > 0 ? "✅" : "📂"}
       </div>
 
-      <p style={{ margin: 0, fontSize: 14, color: count > 0 ? "#ccc" : "#777" }}>
+      <p style={{ margin: 0, fontSize: 14, color: count > 0 ? "var(--text-sub)" : "var(--muted)" }}>
         {count > 0
           ? `${count} 枚の画像が選択されています`
           : `クリックして画像を選択（最大 ${max} 枚）`}
@@ -93,13 +93,13 @@ function UploadZone({
               style={{ width: `${pct}%`, background: accentColor }}
             />
           </div>
-          <p style={{ margin: "6px 0 0", fontSize: 12, color: "#777" }}>
+          <p style={{ margin: "6px 0 0", fontSize: 12, color: "var(--muted)" }}>
             {count} / {max} 枚
           </p>
         </>
       )}
 
-      <p style={{ margin: "10px 0 0", fontSize: 12, color: "#555" }}>{note}</p>
+      <p style={{ margin: "10px 0 0", fontSize: 12, color: "var(--muted)" }}>{note}</p>
     </div>
   );
 }
@@ -125,7 +125,7 @@ function CanvasBlock({
   return (
     <div className="canvas-block">
       <div className="canvas-titlebar">
-        <span style={{ fontSize: 14, fontWeight: 600, color: "#aaa" }}>{title}</span>
+        <span style={{ fontSize: 14, fontWeight: 600, color: "var(--text-sub)" }}>{title}</span>
         <button className={`dl-btn ${dlClass}`} onClick={onDownload}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -161,15 +161,30 @@ function SectionHeader({
       <div className="section-dot" style={{ background: dimColor, color }}>
         {letter}
       </div>
-      <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>{title}</h2>
+      <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "var(--text)" }}>{title}</h2>
     </div>
+  );
+}
+
+/* ── Theme Toggle ────────────────────────────────────────────── */
+function ThemeToggle({ dark, onToggle }: { dark: boolean; onToggle: () => void }) {
+  return (
+    <button className="theme-toggle" onClick={onToggle} aria-label="テーマ切替">
+      <span style={{ fontSize: 16, lineHeight: 1 }}>{dark ? "☀️" : "🌙"}</span>
+      {dark ? "ライトモード" : "ダークモード"}
+    </button>
   );
 }
 
 /* ── Page ────────────────────────────────────────────────────── */
 export default function Home() {
+  const [dark, setDark] = useState(true);
   const [images13, setImages13] = useState<ImageItem[]>([]);
   const [images7, setImages7] = useState<ImageItem[]>([]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+  }, [dark]);
 
   const stageRef9 = useRef<any>(null);
   const stageRef4 = useRef<any>(null);
@@ -234,19 +249,20 @@ export default function Home() {
 
       {/* ── Header ── */}
       <header style={{
-        background: "linear-gradient(180deg,#111118 0%,var(--bg) 100%)",
+        background: "var(--header-bg)",
         borderBottom: "1px solid var(--border)",
         padding: "20px 40px",
         display: "flex",
         alignItems: "center",
         gap: 18,
+        transition: "background 0.25s, border-color 0.25s",
       }}>
         <img
           src="/new-rogo.jpg"
           alt="logo"
           style={{ width: 52, height: 52, borderRadius: 10, objectFit: "cover", border: "1px solid var(--border)" }}
         />
-        <div>
+        <div style={{ flex: 1 }}>
           <h1 style={{ margin: 0, fontSize: 20, fontWeight: 700, letterSpacing: "-0.01em" }}>
             画像を勝手にレイアウトしてもらいまSHOW
           </h1>
@@ -254,6 +270,7 @@ export default function Home() {
             画像をアップロード → 自動でレイアウト → JPEG でダウンロード
           </p>
         </div>
+        <ThemeToggle dark={dark} onToggle={() => setDark(d => !d)} />
       </header>
 
       {/* ── Main ── */}
