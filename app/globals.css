@@ -1,80 +1,140 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0d0d0d;
-  --foreground: #f0f0f0;
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #18181f;
+  --border: #252530;
+  --text: #e8e8f0;
+  --muted: #666680;
+  --blue: #3b82f6;
+  --blue-dim: rgba(59,130,246,0.15);
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.15);
+  --purple: #a855f7;
+  --purple-dim: rgba(168,85,247,0.15);
 }
+
+* { box-sizing: border-box; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  margin: 0;
 }
 
+/* Upload zone */
 .upload-zone {
-  border: 2px dashed #444;
+  border: 2px dashed var(--border);
+  border-radius: 14px;
+  padding: 28px 24px;
+  cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
+  text-align: center;
+  user-select: none;
 }
 .upload-zone:hover {
-  border-color: #888;
-  background: rgba(255, 255, 255, 0.04);
+  border-color: #444455;
+  background: rgba(255,255,255,0.02);
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  transition: opacity 0.2s, transform 0.1s;
-}
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.btn-success {
-  background: linear-gradient(135deg, #16a34a, #15803d);
-  transition: opacity 0.2s, transform 0.1s;
-}
-.btn-success:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-.btn-success:active {
-  transform: translateY(0);
-}
-
-.btn-purple {
-  background: linear-gradient(135deg, #9333ea, #7e22ce);
-  transition: opacity 0.2s, transform 0.1s;
-}
-.btn-purple:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-.btn-purple:active {
-  transform: translateY(0);
-}
-
-.canvas-wrapper {
-  border: 1px solid #2a2a2a;
-  border-radius: 12px;
+/* Progress bar */
+.progress-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 9999px;
   overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  margin-top: 10px;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.4s ease;
 }
 
+/* Canvas scroll container */
+.canvas-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #0e0e16;
+  scrollbar-width: thin;
+  scrollbar-color: #333344 transparent;
+}
+.canvas-scroll::-webkit-scrollbar { height: 6px; }
+.canvas-scroll::-webkit-scrollbar-track { background: transparent; }
+.canvas-scroll::-webkit-scrollbar-thumb { background: #333344; border-radius: 9999px; }
+
+/* Canvas title bar */
+.canvas-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  border-radius: 12px 12px 0 0;
+}
+
+/* Download button */
+.dl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.1s;
+  color: #fff;
+}
+.dl-btn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.dl-btn:active { transform: translateY(0); }
+.dl-btn-blue  { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
+.dl-btn-green { background: linear-gradient(135deg,#16a34a,#15803d); }
+.dl-btn-purple{ background: linear-gradient(135deg,#9333ea,#7e22ce); }
+
+/* Section card */
 .section-card {
-  background: #161616;
-  border: 1px solid #222;
-  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
   padding: 32px;
 }
 
+/* Badge */
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 4px 12px;
+  gap: 5px;
+  padding: 3px 12px;
   border-radius: 9999px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Section number dot */
+.section-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* Canvas sub-block */
+.canvas-block {
+  margin-top: 28px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
 }
