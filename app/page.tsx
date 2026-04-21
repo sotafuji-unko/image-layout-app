@@ -19,10 +19,7 @@ function useHtmlImages(items: ImageItem[]) {
     const imageElements = items.map((item) => {
       const img = new window.Image();
       img.src = item.src;
-      return {
-        ...item,
-        image: img,
-      };
+      return { ...item, image: img };
     });
 
     let loadedCount = 0;
@@ -43,9 +40,7 @@ function useHtmlImages(items: ImageItem[]) {
       }
     });
 
-    if (imageElements.length === 0) {
-      setLoadedImages([]);
-    }
+    if (imageElements.length === 0) setLoadedImages([]);
   }, [items]);
 
   return loadedImages;
@@ -58,11 +53,101 @@ function fitImage(
   maxHeight: number
 ) {
   const ratio = Math.min(maxWidth / imgWidth, maxHeight / imgHeight);
+  return { width: imgWidth * ratio, height: imgHeight * ratio };
+}
 
-  return {
-    width: imgWidth * ratio,
-    height: imgHeight * ratio,
-  };
+function UploadButton({
+  id,
+  onChange,
+  count,
+  max,
+  label,
+}: {
+  id: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  count: number;
+  max: number;
+  label: string;
+}) {
+  return (
+    <div className="upload-zone rounded-xl p-6 flex flex-col items-center gap-3 cursor-pointer"
+      onClick={() => document.getElementById(id)?.click()}
+    >
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={onChange}
+        id={id}
+        style={{ display: "none" }}
+      />
+      <div style={{ fontSize: 36 }}>📁</div>
+      <p style={{ color: "#aaa", fontSize: 14 }}>
+        クリックして画像を選択（最大 {max} 枚）
+      </p>
+      <div className="badge" style={{
+        background: count > 0 ? "rgba(37,99,235,0.2)" : "rgba(255,255,255,0.06)",
+        color: count > 0 ? "#60a5fa" : "#888",
+        border: `1px solid ${count > 0 ? "#2563eb" : "#333"}`,
+      }}>
+        {count > 0 ? `${count} 枚選択中` : "未選択"}
+      </div>
+      <p style={{ fontSize: 12, color: "#555" }}>{label}</p>
+    </div>
+  );
+}
+
+function DownloadButton({
+  onClick,
+  label,
+  className,
+}: {
+  onClick: () => void;
+  label: string;
+  className: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`${className} text-white font-semibold rounded-xl cursor-pointer flex items-center gap-2`}
+      style={{ padding: "12px 24px", fontSize: 15, border: "none" }}
+    >
+      <span>⬇</span>
+      {label}
+    </button>
+  );
+}
+
+function SectionHeader({
+  number,
+  title,
+  color,
+}: {
+  number: string;
+  title: string;
+  color: string;
+}) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 24 }}>
+      <div
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          background: color,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: "bold",
+          fontSize: 18,
+          flexShrink: 0,
+        }}
+      >
+        {number}
+      </div>
+      <h2 style={{ fontSize: 22, fontWeight: "bold", margin: 0 }}>{title}</h2>
+    </div>
+  );
 }
 
 export default function Home() {
@@ -79,425 +164,244 @@ export default function Home() {
   const orderPage1 = [7, 2, 8, 4, 12, 6, 3, 9, 5];
   const orderPage2 = [11, 0, 10, 1];
 
-const rotationSettingsPage1: Record<number, number> = {
-  0: 90,
-};
-
-const rotationSettingsPage2: Record<number, number> = {
-  10: 180,
-  11: 180,
-};
-
-  const flipSettings: Record<number, boolean> = {
-    7: true,
-    8: true,
-    10: true,
-    11: true,
-  };
+  const rotationSettingsPage1: Record<number, number> = { 0: 90 };
+  const rotationSettingsPage2: Record<number, number> = { 10: 180, 11: 180 };
+  const flipSettings: Record<number, boolean> = { 7: true, 8: true, 10: true, 11: true };
 
   const orderPage7 = [0, 6, 3, 1, 4, 5, 2];
+  const rotationSettingsPage7: Record<number, number> = { 0: 0, 5: 180, 6: 180 };
+  const flipSettingsPage7: Record<number, boolean> = { 5: true, 6: true };
 
-const rotationSettingsPage7: Record<number, number> = {
-  0: 0,
-  5: 180,
-  6: 180,
-};
+  const slots9 = [
+    { x: 310, y: 210 }, { x: 700, y: 210 }, { x: 1090, y: 210 },
+    { x: 310, y: 490 }, { x: 700, y: 490 }, { x: 1090, y: 490 },
+    { x: 310, y: 770 }, { x: 700, y: 770 }, { x: 1090, y: 770 },
+  ];
 
-const flipSettingsPage7: Record<number, boolean> = {
-  5: true,
-  6: true,
-};
+  const slots4 = [
+    { x: 420, y: 300 }, { x: 980, y: 300 },
+    { x: 420, y: 700 }, { x: 980, y: 700 },
+  ];
 
+  const slots7 = [
+    { x: 320, y: 210, width: 280, height: 340 },
+    { x: 700, y: 210, width: 380, height: 280 },
+    { x: 320, y: 500, width: 380, height: 280 },
+    { x: 700, y: 500, width: 380, height: 280 },
+    { x: 1080, y: 500, width: 380, height: 280 },
+    { x: 700, y: 800, width: 380, height: 280 },
+    { x: 1080, y: 800, width: 380, height: 280 },
+  ];
 
-  // 3x3 の9枠
-const slots9 = [
-  { x: 310, y: 210 },
-  { x: 700, y: 210 },
-  { x: 1090, y: 210 },
-
-  { x: 310, y: 490 },
-  { x: 700, y: 490 },
-  { x: 1090, y: 490 },
-
-  { x: 310, y: 770 },
-  { x: 700, y: 770 },
-  { x: 1090, y: 770 },
-];
-
-  // 2x2 の4枠
-const slots4 = [
-  { x: 420, y: 300 },
-  { x: 980, y: 300 },
-  { x: 420, y: 700 },
-  { x: 980, y: 700 },
-];
-
-const slots7 = [
-  // 上段
-  { x: 320, y: 210, width: 280, height: 340 }, // A
-  { x: 700, y: 210, width: 380, height: 280 }, // B
-
-  // 中段
-  { x: 320, y: 500, width: 380, height: 280 }, // C
-  { x: 700, y: 500, width: 380, height: 280 }, // D
-  { x: 1080, y: 500, width: 380, height: 280 }, // E
-
-  // 下段
-  { x: 700, y: 800, width: 380, height: 280 }, // F
-  { x: 1080, y: 800, width: 380, height: 280 }, // G
-];
-
-
-
-const handleChange13 = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const files = Array.from(e.target.files ?? []).slice(0, 13);
-
-  const newImages: ImageItem[] = files.map((file, index) => ({
-    id: `thirteen-${file.name}-${index}`,
-    src: URL.createObjectURL(file),
-    rotation: 0,
-    flip: false,
-  }));
-
-  setImages13(newImages);
-};
-
-
+  const handleChange13 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []).slice(0, 13);
+    setImages13(files.map((file, index) => ({
+      id: `thirteen-${file.name}-${index}`,
+      src: URL.createObjectURL(file),
+      rotation: 0,
+      flip: false,
+    })));
+  };
 
   const handleChange7 = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const files = Array.from(e.target.files ?? []).slice(0, 7);
+    const files = Array.from(e.target.files ?? []).slice(0, 7);
+    setImages7(files.map((file, index) => ({
+      id: `seven-${file.name}-${index}`,
+      src: URL.createObjectURL(file),
+      rotation: 0,
+      flip: false,
+    })));
+  };
 
-  const newImages: ImageItem[] = files.map((file, index) => ({
-    id: `seven-${file.name}-${index}`,
-    src: URL.createObjectURL(file),
-    rotation: 0,
-    flip: false,
-  }));
-
-  setImages7(newImages);
-};
-
-const handleDownload9 = () => {
-  const uri = stageRef9.current?.toDataURL({
-    pixelRatio: 2,
-    mimeType: "image/jpeg",
-  });
-
-  if (!uri) return;
-
-  const link = document.createElement("a");
-  link.download = "layout-9.jpg";
-  link.href = uri;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
-const handleDownload4 = () => {
-  const uri = stageRef4.current?.toDataURL({
-    pixelRatio: 2,
-    mimeType: "image/jpeg", // ← 追加
-  });
-
-  if (!uri) return;
-
-  const link = document.createElement("a");
-  link.download = "layout-4.jpg"; // ← 変更
-  link.href = uri;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
-
-const handleDownload7 = () => {
-  const uri = stageRef7.current?.toDataURL({
-    pixelRatio: 2,
-    mimeType: "image/jpeg", // ← 追加
-  });
-
-  if (!uri) return;
-
-  const link = document.createElement("a");
-  link.download = "layout-7.jpg"; // ← 変更
-  link.href = uri;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-};
+  const makeDownloadHandler = (ref: React.RefObject<any>, filename: string) => () => {
+    const uri = ref.current?.toDataURL({ pixelRatio: 2, mimeType: "image/jpeg" });
+    if (!uri) return;
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
-    <div
-      style={{
-        padding: 40,
-        color: "white",
-        background: "black",
-        minHeight: "100vh",
-      }}
-    >
+    <div style={{ background: "#0d0d0d", minHeight: "100vh", padding: "0 0 80px" }}>
 
+      {/* Header */}
+      <header style={{
+        background: "linear-gradient(180deg, #111 0%, #0d0d0d 100%)",
+        borderBottom: "1px solid #222",
+        padding: "24px 40px",
+        display: "flex",
+        alignItems: "center",
+        gap: 20,
+        marginBottom: 48,
+      }}>
+        <img src="/new-rogo.jpg" alt="logo" style={{ width: 56, height: 56, borderRadius: 12, objectFit: "cover" }} />
+        <div>
+          <h1 style={{ fontSize: 22, fontWeight: "bold", margin: 0, color: "#f0f0f0" }}>
+            画像を勝手にレイアウトしてもらいまSHOW
+          </h1>
+          <p style={{ fontSize: 13, color: "#666", margin: "4px 0 0" }}>
+            画像をアップロードして自動レイアウト → JPEG でダウンロード
+          </p>
+        </div>
+      </header>
 
+      <div style={{ maxWidth: 1480, margin: "0 auto", padding: "0 40px", display: "flex", flexDirection: "column", gap: 48 }}>
 
-<div style={{ textAlign: "center" }}>
-  <img
-    src="/new-rogo.jpg"
-    alt="logo"
-    style={{
-      width: 200,
-      marginBottom: 10,
-    }}
-  />
+        {/* Section A: 大人用 13 枚 */}
+        <div className="section-card">
+          <SectionHeader number="A" title="大人用レイアウト（13枚）" color="#2563eb" />
 
-  <h1
-    style={{
-      fontSize: 36,
-      fontWeight: "bold",
-    }}
-  >
-    画像を勝手にレイアウトしてもらいまSHOW
-  </h1>
-</div>
+          <UploadButton
+            id="upload13"
+            onChange={handleChange13}
+            count={images13.length}
+            max={13}
+            label="9枚レイアウト + 4枚レイアウトの2種類を生成します"
+          />
 
-<h2
-  style={{
-    fontSize: 32,
-    fontWeight: "bold",
-    marginTop: 20,
-  }}
->
-  大人用13枚アップロード↓
-</h2>
+          {/* 9-grid layout */}
+          <div style={{ marginTop: 36 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <h3 style={{ fontSize: 16, fontWeight: "600", color: "#aaa", margin: 0 }}>
+                3×3 グリッド（9枚）
+              </h3>
+              <DownloadButton
+                onClick={makeDownloadHandler(stageRef9, "layout-9.jpg")}
+                label="ダウンロード"
+                className="btn-primary"
+              />
+            </div>
+            <div className="canvas-wrapper" style={{ background: "#111", width: "fit-content" }}>
+              <Stage ref={stageRef9} width={1400} height={980}>
+                <Layer>
+                  <Rect x={0} y={0} width={1400} height={980} fill="white" />
+                  {orderPage1.map((imageIndex, slotIndex) => {
+                    const item = loadedImages13[imageIndex];
+                    const slot = slots9[slotIndex];
+                    if (!item || !slot) return null;
+                    const nw = item.image.naturalWidth || item.image.width || 1;
+                    const nh = item.image.naturalHeight || item.image.height || 1;
+                    const fitted = fitImage(nw, nh, 360, 270);
+                    return (
+                      <KonvaImage
+                        key={`page1-${item.id}`}
+                        image={item.image}
+                        x={slot.x} y={slot.y}
+                        width={fitted.width} height={fitted.height}
+                        offsetX={fitted.width / 2} offsetY={fitted.height / 2}
+                        rotation={rotationSettingsPage1[imageIndex] ?? 0}
+                        scaleX={flipSettings[imageIndex] ? -1 : 1}
+                        scaleY={1}
+                      />
+                    );
+                  })}
+                </Layer>
+              </Stage>
+            </div>
+          </div>
 
-<input
-  type="file"
-  accept="image/*"
-  multiple
-  onChange={handleChange13}
-  id="upload13"
-  style={{ display: "none" }}
-/>
+          {/* 4-grid layout */}
+          <div style={{ marginTop: 36 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <h3 style={{ fontSize: 16, fontWeight: "600", color: "#aaa", margin: 0 }}>
+                2×2 グリッド（4枚）
+              </h3>
+              <DownloadButton
+                onClick={makeDownloadHandler(stageRef4, "layout-4.jpg")}
+                label="ダウンロード"
+                className="btn-success"
+              />
+            </div>
+            <div className="canvas-wrapper" style={{ background: "#111", width: "fit-content" }}>
+              <Stage ref={stageRef4} width={1400} height={980}>
+                <Layer>
+                  <Rect x={0} y={0} width={1400} height={980} fill="white" />
+                  {orderPage2.map((imageIndex, slotIndex) => {
+                    const item = loadedImages13[imageIndex];
+                    const slot = slots4[slotIndex];
+                    if (!item || !slot) return null;
+                    const nw = item.image.naturalWidth || item.image.width || 1;
+                    const nh = item.image.naturalHeight || item.image.height || 1;
+                    const fitted = fitImage(nw, nh, 520, 390);
+                    return (
+                      <KonvaImage
+                        key={`page2-${item.id}`}
+                        image={item.image}
+                        x={slot.x} y={slot.y}
+                        width={fitted.width} height={fitted.height}
+                        offsetX={fitted.width / 2} offsetY={fitted.height / 2}
+                        rotation={rotationSettingsPage2[imageIndex] ?? 0}
+                        scaleX={flipSettings[imageIndex] ? -1 : 1}
+                        scaleY={1}
+                      />
+                    );
+                  })}
+                </Layer>
+              </Stage>
+            </div>
+          </div>
+        </div>
 
-<label
-  htmlFor="upload13"
-  style={{
-    color: "red",
-    textDecoration: "underline",
-    cursor: "pointer",
-    fontWeight: "bold",
-  }}
->
-  ファイルを選択
-</label>
+        {/* Divider */}
+        <div style={{ borderTop: "1px solid #222" }} />
 
-<p style={{ marginTop: 12 }}>13枚までアップロードできます</p>
+        {/* Section B: 子供用 7 枚 */}
+        <div className="section-card">
+          <SectionHeader number="B" title="子供用レイアウト（7枚）" color="#9333ea" />
 
-      <div
-        style={{
-          border: "1px solid #666",
-          width: 1400,
-          height: 980,
-          background: "#111",
-          marginTop: 20,
-        }}
-      >
-        <Stage ref={stageRef9} width={1400} height={980}>
-          <Layer>
-            <Rect x={0} y={0} width={1400} height={980} fill="white" />
+          <UploadButton
+            id="upload7"
+            onChange={handleChange7}
+            count={images7.length}
+            max={7}
+            label="7枚の非対称レイアウトを生成します"
+          />
 
-{orderPage1.map((imageIndex, slotIndex) => {
-  const item = loadedImages13[imageIndex];
-  const slot = slots9[slotIndex];
-  if (!item || !slot) return null;
+          <div style={{ marginTop: 36 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <h3 style={{ fontSize: 16, fontWeight: "600", color: "#aaa", margin: 0 }}>
+                非対称レイアウト（7枚）
+              </h3>
+              <DownloadButton
+                onClick={makeDownloadHandler(stageRef7, "layout-7.jpg")}
+                label="ダウンロード"
+                className="btn-purple"
+              />
+            </div>
+            <div className="canvas-wrapper" style={{ background: "#111", width: "fit-content" }}>
+              <Stage ref={stageRef7} width={1400} height={980}>
+                <Layer>
+                  <Rect x={0} y={0} width={1400} height={980} fill="white" />
+                  {orderPage7.map((imageIndex, slotIndex) => {
+                    const item = loadedImages7[imageIndex];
+                    const slot = slots7[slotIndex];
+                    if (!item || !slot) return null;
+                    const nw = item.image.naturalWidth || item.image.width || 1;
+                    const nh = item.image.naturalHeight || item.image.height || 1;
+                    const fitted = fitImage(nw, nh, slot.width, slot.height);
+                    return (
+                      <KonvaImage
+                        key={`page7-${item.id}`}
+                        image={item.image}
+                        x={slot.x} y={slot.y}
+                        width={fitted.width} height={fitted.height}
+                        offsetX={fitted.width / 2} offsetY={fitted.height / 2}
+                        rotation={rotationSettingsPage7[imageIndex] ?? 0}
+                        scaleX={flipSettingsPage7[imageIndex] ? -1 : 1}
+                        scaleY={1}
+                      />
+                    );
+                  })}
+                </Layer>
+              </Stage>
+            </div>
+          </div>
+        </div>
 
-const naturalWidth = item.image.naturalWidth || item.image.width || 1;
-const naturalHeight = item.image.naturalHeight || item.image.height || 1;
-
-  const fitted = fitImage(naturalWidth, naturalHeight, 360, 270);
-
-  return (
-    <KonvaImage
-      key={`page1-${item.id}`}
-      image={item.image}
-      x={slot.x}
-      y={slot.y}
-      width={fitted.width}
-      height={fitted.height}
-      offsetX={fitted.width / 2}
-      offsetY={fitted.height / 2}
-      rotation={rotationSettingsPage1[imageIndex] ?? 0}
-      scaleX={flipSettings[imageIndex] ? -1 : 1}
-      scaleY={1}
-    />
-  );
-})}
-          </Layer>
-        </Stage>
       </div>
-
-      <button
-        onClick={handleDownload9}
-        style={{
-          marginTop: 20,
-          padding: "10px 16px",
-          backgroundColor: "#2563eb",
-          color: "white",
-          border: "none",
-          borderRadius: 8,
-          cursor: "pointer",
-          fontSize: 16,
-        }}
-      >
-        9枚レイアウトをダウンロード
-      </button>
-
-      <div
-        style={{
-          border: "1px solid #666",
-          width: 1400,
-          height: 980,
-          background: "#111",
-          marginTop: 20,
-        }}
-      >
-        <Stage ref={stageRef4} width={1400} height={980}>
-          <Layer>
-            <Rect x={0} y={0} width={1400} height={980} fill="white" />
-
-{orderPage2.map((imageIndex, slotIndex) => {
-  const item = loadedImages13[imageIndex];
-  const slot = slots4[slotIndex];
-  if (!item || !slot) return null;
-
-const naturalWidth = item.image.naturalWidth || item.image.width || 1;
-const naturalHeight = item.image.naturalHeight || item.image.height || 1;
-
-  const fitted = fitImage(naturalWidth, naturalHeight, 520, 390);
-
-  return (
-    <KonvaImage
-      key={`page2-${item.id}`}
-      image={item.image}
-      x={slot.x}
-      y={slot.y}
-      width={fitted.width}
-      height={fitted.height}
-      offsetX={fitted.width / 2}
-      offsetY={fitted.height / 2}
-      rotation={rotationSettingsPage2[imageIndex] ?? 0}
-      scaleX={flipSettings[imageIndex] ? -1 : 1}
-      scaleY={1}
-    />
-  );
-})}
-          </Layer>
-        </Stage>
-      </div>
-
-      <button
-        onClick={handleDownload4}
-        style={{
-          marginTop: 20,
-          padding: "10px 16px",
-          backgroundColor: "#16a34a",
-          color: "white",
-          border: "none",
-          borderRadius: 8,
-          cursor: "pointer",
-          fontSize: 16,
-        }}
-      >
-        4枚レイアウトをダウンロード
-      </button>
-
-      <h2
-  style={{
-    fontSize: 32,
-    fontWeight: "bold",
-    marginTop: 20,
-  }}
->
-  子供用7枚レイアウト↓
-</h2>
-<input
-  type="file"
-  accept="image/*"
-  multiple
-  onChange={handleChange7}
-  id="upload7"
-  style={{ display: "none" }}
-/>
-
-<label
-  htmlFor="upload7"
-  style={{
-    color: "red",
-    textDecoration: "underline",
-    cursor: "pointer",
-    fontWeight: "bold",
-  }}
->
-  ファイルを選択
-</label>
-<p style={{ marginTop: 12 }}>7枚までアップロードできます</p>
-
-<div
-  style={{
-    border: "1px solid #666",
-    width: 1400,
-    height: 980,
-    background: "#111",
-    marginTop: 20,
-  }}
->
-  <Stage ref={stageRef7} width={1400} height={980}>
-    <Layer>
-      <Rect x={0} y={0} width={1400} height={980} fill="white" />
-
-{orderPage7.map((imageIndex, slotIndex) => {
-  const item = loadedImages7[imageIndex];
-  const slot = slots7[slotIndex];
-  if (!item || !slot) return null;
-
-const naturalWidth = item.image.naturalWidth || item.image.width || 1;
-const naturalHeight = item.image.naturalHeight || item.image.height || 1;
-
-const fitted = fitImage(naturalWidth, naturalHeight, slot.width, slot.height);
-
-  return (
-    <KonvaImage
-      key={`page7-${item.id}`}
-      image={item.image}
-      x={slot.x}
-      y={slot.y}
-width={fitted.width}
-height={fitted.height}
-offsetX={fitted.width / 2}
-offsetY={fitted.height / 2}
-      rotation={rotationSettingsPage7[imageIndex] ?? 0}
-      scaleX={flipSettingsPage7[imageIndex] ? -1 : 1}
-      scaleY={1}
-    />
-  );
-})}
-    </Layer>
-  </Stage>
-</div>
-
-<button
-  onClick={handleDownload7}
-  style={{
-    marginTop: 20,
-    padding: "10px 16px",
-    backgroundColor: "#9333ea",
-    color: "white",
-    border: "none",
-    borderRadius: 8,
-    cursor: "pointer",
-    fontSize: 16,
-  }}
->
-  7枚レイアウトをダウンロード
-</button>
     </div>
   );
-
 }
